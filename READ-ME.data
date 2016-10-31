@@ -1,6 +1,0 @@
-Os pacotes npm estão específicados no arquivo package.js
-
-$ npm install --save-dev
-$ npm test
-
-Agradeço a oportunidade, e mesmo não tento "fluência" com testes me esforçei bastante para realizar o melhor! Obrigado :D
