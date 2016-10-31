@@ -1,0 +1,17 @@
+#list-social-base {
+    overflow-y: auto;
+    height: 300px;
+}
+.top-space {
+    margin-top: 20px;
+}
+.center-div {
+    width: 50%;
+    margin: 0 auto; 
+}
+.has-error {
+    color: red;
+}
+.node-active {
+    background-color: rgba(16, 255, 43, 0.47);
+}

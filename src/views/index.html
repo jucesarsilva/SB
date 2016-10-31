@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html ng-app="SocialBaseApp">
+<head>
+    <title>Social Base TODO List</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <!-- Basic frameworks/libs styles -->
+    <link type="text/css" href="/src/css/bootstrap-3.3.5/bootstrap.css" rel="stylesheet"/>
+    <link type="text/css" href="/src/css/bootstrap-3.3.5/bootstrap-theme.css" rel="stylesheet"/>
+    <link type="text/css" href="/src/css/index.css" rel="stylesheet"/>
+    <link type="text/css" href="/src/js/directives/notifications/notifications.css" rel="stylesheet"/>
+    
+    <!-- Basic frameworks/libs block -->
+    <script type="text/javascript" src="/src/js/vendor/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="/src/js/vendor/bootstrap-3.3.5/bootstrap.min.js"></script>
+    
+    <!-- AngularJS block -->
+    <script type="text/javascript" src="/src/js/vendor/angular-1.4.4/angular.min.js"></script>
+    <script type="text/javascript" src="/src/js/vendor/angular-1.4.4/angular-sanitize.min.js"></script>
+    <script type="text/javascript" src="/src/js/vendor/angular-1.4.4/angular-loader.min.js"></script>
+    <script type="text/javascript" src="/src/js/vendor/angular-1.4.4/angular-route.min.js"></script>
+    <script type="text/javascript" src="/src/js/vendor/angular-1.4.4/angular-resource.min.js"></script>
+    <script type="text/javascript" src="/src/js/vendor/angular-1.4.4/angular-messages.min.js"></script>
+    <script type="text/javascript" src="/src/js/vendor/angular-1.4.4/angular-cookies.min.js"></script>
+    <script type="text/javascript" src="/src/js/vendor/angular-1.4.4/angular-mocks.js"></script>
+    <script type="text/javascript" src="/src/js/vendor/angular-1.4.4/angular-touch.min.js"></script>
+    <script type="text/javascript" src="/src/js/vendor/angular-1.4.4/angular-animate.min.js"></script>
+    <script type="text/javascript" src="/src/js/vendor/angular-1.4.4/angular-aria.min.js"></script>
+    
+    <!-- Basic App block -->
+    <script type="text/javascript" src="/src/js/app.js"></script>
+    <script type="text/javascript" src="/src/js/services/services.js"></script>
+    <script type="text/javascript" src="/src/js/directives/directives.js"></script>
+    
+    <!-- Business Rules block -->
+    <script type="text/javascript" src="/src/js/controllers/socialBaseController.js"></script>
+    <script type="text/javascript" src="/src/js/services/notification/$notification.js"></script>
+    <script type="text/javascript" src="/src/js/directives/notifications/notifications.js"></script>
+    <script type="text/javascript" src="/src/js/directives/alert-msg/alert-msg.js"></script>
+    
+</head>
+<body data-ng-controller="SocialBaseController" data-ng-init="init();"
+      background="/src/images/floripa.jpg" bgproperties="fixed">
+    <!-- Messages from system to user -->
+    <notifications></notifications>
+    <!-- Main -->
+    <div class="container">
+        <div class="row">
+            <!-- New Node -->
+            <div class="col-sm-12 top-space">
+                <div class="well center-div">
+                    <form name="nodeForm" class="form-inline" data-ng-submit="save(nodeForm)" novalidate>
+                        <div class="form-group checkbox">
+                            <label>Ativar <input type="checkbox" data-ng-model="node.active"></label>
+                        </div>
+                        <div class="form-group" ng-class="{'has-error' : (nodeForm.description.$error.required || nodeForm.description.$error.maxlength) && !nodeForm.description.$pristine}">
+                            <label for="node.description">Nova Tarefa*:</label>
+                            <input 
+                                id="node.description"
+                                class="form-control"
+                                type="text" 
+                                name="description" 
+                                data-ng-model="node.description"
+                                data-ng-maxlength="20"
+                                data-ng-disabled="!node.active"
+                                placeholder="max(20)"
+                                required="true"/>
+                        </div>
+                        <button type="submit" class="btn btn-default">Salvar</button>
+                        <div>
+                            <p data-ng-show="nodeForm.description.$error.maxlength" class="has-error">Número máximo de caracteres.</p>
+                            <p data-ng-show="nodeForm.description.$error.required && !nodeForm.description.$pristine" 
+                               class="has-error">É um campo obrigatório.</p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- List -->
+            <div class="col-sm-12 top-space">
+                <div data-ng-if="!nodes.length" > 
+                    <h3><p class="text-center">Você ainda não tem nenhuma tarefa cadastrada.</p></h3>
+                </div>
+                <div data-ng-if="nodes.length" id="list-social-base" class="well center-div">  
+                    <h2><p class="text-center">Tarefas</p></h2>
+                    <table class="table"> 
+                        <thead> 
+                            <tr> 
+                                <th>Id</th> 
+                                <th>Ativo</th> 
+                                <th>Descrição</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead> 
+                        <tbody> 
+                            <tr data-ng-repeat="($indexNode, n) in nodes track by $indexNode"
+                                data-ng-class="{'active success': n.active}"> 
+                                <th scope="row">{{n.Id}}</th> 
+                                <td>
+                                    <i data-ng-class="{'glyphicon glyphicon-ok': n.active, 'glyphicon glyphicon-lock': !n.active}"></i>
+                                </td> 
+                                <td>{{n.description}}</td> 
+                                <td>
+                                    <button class="btn btn-sm btn-default"
+                                        data-ng-click="update(n, $indexNode);">
+                                        <i class="glyphicon glyphicon-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger"
+                                        data-ng-click="confirmRemove($indexNode);">
+                                        <i class="glyphicon glyphicon-remove"></i>
+                                    </button>
+                                </td> 
+                            </tr> 
+                        </tbody> 
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Confirmation for remove -->
+    <alert-msg id="deleteModal" modal-title="<p class='text-center'>Deseja realmente remover essa entrada?</p>">
+        <div class="row">
+            <div class="col-sm-12">
+                <P class="text-center">{{nodes[currentIndex].Id}} - {{nodes[currentIndex].description}}</P>
+            </div>
+        </div>
+        <div class="row top-space">
+            <div class="col-sm-12">
+                <button type="button" class="btn btn-default pull-right" data-ng-click="closeDeleteModal()" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary pull-right" data-ng-click="remove();" data-dismiss="modal">Confirmar</button>
+            </div>
+        </div>
+    </alert-msg>
+</body>
+</html>
